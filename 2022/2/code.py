@@ -5,7 +5,7 @@
 class Game:
     def __init__(self, opponetSelection=' ', mySelection=' '):
         self.orginialOpponetSelection = opponetSelection
-        self.orginialMySelection = opponetSelection
+        self.orginialMySelection = mySelection
 
         #convert ABC XYZ to R P S
         if opponetSelection == "A":  opponetSelection = "R"
@@ -20,7 +20,7 @@ class Game:
         self.score = "NOT SET"
 
     def __repr__(self):
-        return "[ME {} {} PTS {} ]".format(self.mySelection, self.opponetSelection, self.score)
+        return "[ME {} {} PTS {}  ---- {}{}]".format(self.mySelection, self.opponetSelection, self.score, self.orginialOpponetSelection , self.orginialMySelection )
 
     def __str__(self):
         return self.__repr__()
@@ -46,6 +46,28 @@ class Game:
         else: #lose 0pts
             self.score  += 0
 
+    def updateMySelectionForPart2(self):
+        # X means you need to lose, 
+        # Y means you need to end the round in a draw, 
+        # and Z means you need to win.
+
+        if self.orginialMySelection == "X": #lose
+            if self.opponetSelection == "R":  self.mySelection = "S"
+            elif self.opponetSelection == "P":  self.mySelection = "R"
+            elif self.opponetSelection == "S":  self.mySelection = "P"
+
+        elif self.orginialMySelection == "Y": #draw
+            if self.opponetSelection == "R":  self.mySelection = "R"
+            elif self.opponetSelection == "P":  self.mySelection = "P"
+            elif self.opponetSelection == "S":  self.mySelection = "S"
+
+        elif self.orginialMySelection == "Z": #win
+            if self.opponetSelection == "R":  self.mySelection = "P"
+            elif self.opponetSelection == "P":  self.mySelection = "S"
+            elif self.opponetSelection == "S":  self.mySelection = "R"  
+        else:
+            print("!!!!orginial not found!!!!!!!!!!!!!!", self) 
+
 
 class AOC:
     def __init__(self):
@@ -62,18 +84,25 @@ class AOC:
                 them, me = line.split(" ")
                 game = Game(them, me)
                 game.calculateScore()
+                self.matches.append(game)
                 self.totalScore += game.score
-                print(game)
+                # print(game)
 
-    def part1(self):
+    def part1(self): # 10 ->11:30 -> 1.5h
         print("Part One : ", self.totalScore)
 
-    def part2(self):
-        print("Part Two : ", "")
+    def part2(self): # 11:30 -> 12 -> 30m
+        part2Total = 0
+        for game in self.matches:
+            game.updateMySelectionForPart2()
+            game.calculateScore()
+            part2Total += game.score
+            # print(game)
+        print("Part Two : ", part2Total)
 
 
 aoc = AOC()
 dataFile = "input.txt"
 aoc.readFile(dataFile)
 aoc.part1()
-# aoc.part2()
+aoc.part2()
