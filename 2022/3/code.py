@@ -2,6 +2,8 @@
 # Author = ?
 # Date = December 2018
 
+from collections import defaultdict
+
 class AOC:
     def __init__(self):
         self.letters = []
@@ -28,14 +30,26 @@ class AOC:
     def part1(self): # 6:20 -> 6:50 : 30m
         print("Part One : ", self.totalpriority)
 
-    def part2(self): # 11:30 -> 12 -> 30m
-        part2Total = 0
-        # for game in self.matches:
-        #     game.updateMySelectionForPart2()
-        #     game.calculateScore()
-        #     part2Total += game.score
-        #     # print(game)
-        print("Part Two : ", part2Total)
+    def part2(self, file): # 6:50 -> 7:25: 35m
+        self.totalpriority = 0
+        grouping = []
+
+        with open(dataFile) as file:
+            while (line := file.readline().rstrip()):
+                lookup = {}
+                for l in line:
+                    lookup[l] = True                    
+                
+                grouping.append(lookup)
+
+                if len(grouping) == 3:
+                    for key in grouping[0]:
+                        if key in grouping[1] and key in grouping[2]:
+                            self.totalpriority += self.letterValue[key]
+                            grouping = []
+                            break
+            
+        print("Part Two : ", self.totalpriority)
 
 
 aoc = AOC()
@@ -43,4 +57,4 @@ dataFile = "input.txt"
 # dataFile = "test1.txt"
 aoc.readFile(dataFile)
 aoc.part1()
-aoc.part2()
+aoc.part2(dataFile)
