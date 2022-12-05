@@ -15,6 +15,7 @@
 class AOC_day5:
     def __init__(self):
         self.towers={}
+        self.towers_part2={}
     
     def printTowers(self):
         for i in range(1, len(self.towers.keys()) +1):
@@ -51,6 +52,10 @@ class AOC_day5:
             #got inputs into towers 9:00
             self.printTowers()
 
+            # part2
+            import copy
+            self.towers_part2 = copy.deepcopy(self.towers)
+
             #now the fum, do the moves
             while (line := file.readline().rstrip()):
                 # move 3 from 8 to 9
@@ -58,17 +63,28 @@ class AOC_day5:
                 source = int(line.split(" ")[3])
                 destination = int(line.split(" ")[5])
 
-                # print(itemsToMove, source,destination)
+                #  part1
                 for i in range(itemsToMove):
                     self.towers[destination].append(self.towers[source].pop())
+
+                #  part1
+                cratesToMove = []
+                for i in range(itemsToMove):
+                    cratesToMove.append(self.towers_part2[source].pop())
+                while cratesToMove:    
+                    self.towers_part2[destination].append(cratesToMove.pop())
 
             self.printTowers()
             part1 = ""            
             for i in range(1, len(self.towers.keys()) +1):
                 part1 += self.towers[i][-1]
 
+            part2 = ""            
+            for i in range(1, len(self.towers_part2.keys()) +1):
+                part2 += self.towers_part2[i][-1]
+
         print("Part one : ", part1) # 8:20 to 9:41 => 1:21m
-        # print("Part two : ", anyOverLap)  
+        print("Part two : ", part2) # 8:41 to 9:50 => 9m
 
 aoc = AOC_day5()
 dataFile = "input.txt"
