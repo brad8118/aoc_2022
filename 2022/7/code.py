@@ -59,7 +59,7 @@ class AOC:
 
         with open(dataFile) as file:
             while (line := file.readline().rstrip()):
-                print(line, "::", currentPath)
+                # print(line, "::", currentPath)
                 if line == "$ cd ..": ## up one
                     lastSlash = currentPath[0:-1].rfind("/")
                     currentPath = currentPath[0:lastSlash+1]       
@@ -75,7 +75,6 @@ class AOC:
                     pass # just listing the current dirs
                 elif line.startswith("dir"):## dir btgrv
                     name = line.split(" ")[1]
-                    # path = currentPath + name + '/' 
                     self.paths[currentPath].addDir(name)                    
                 else: ## should be a file -> 45629 qgj.jjs
                     if len(line.split(" ")) != 2:
@@ -86,7 +85,7 @@ class AOC:
     def calculateFoldSizes(self):
         groupedByDepth = {}
         deepest=0
-        print(self.paths)
+        # print(self.paths)
         for k in self.paths:
             depth = k.count('/')
             if depth in groupedByDepth:
@@ -116,26 +115,23 @@ class AOC:
 
         print("Part One : ", total)
 
-    # def part2(self, file): # 2:24
-    #     self.totalpriority = 0
-    #     grouping = []
+    def part2(self): # 2:24 -> 3:01 => 37m
+        totalDiskSpace = 70000000
+        requiredSpace = 30000000
+        usedSpace = self.paths['/'].getChildDirsAndFileSizes()
+        freeDiskSpace = totalDiskSpace - usedSpace
+        neededSpace = requiredSpace - freeDiskSpace
 
-    #     with open(dataFile) as file:
-    #         while (line := file.readline().rstrip()):
-    #             lookup = {}
-    #             for l in line:
-    #                 lookup[l] = True                    
-                
-    #             grouping.append(lookup)
+        #space dif, path, size of folder
+        smallestDrive = (totalDiskSpace, "path", usedSpace)
 
-    #             if len(grouping) == 3:
-    #                 for key in grouping[0]:
-    #                     if key in grouping[1] and key in grouping[2]:
-    #                         self.totalpriority += self.letterValue[key]
-    #                         grouping = []
-    #                         break
-            
-    #     print("Part Two : ", self.totalpriority)
+        for folder in self.paths.values():
+            size = folder.getChildDirsAndFileSizes()
+            diff = size - neededSpace 
+            if diff >= 0 and diff < smallestDrive[0]:
+                smallestDrive = (diff, folder.path, size)
+                    
+        print("Part Two : ", smallestDrive)
 
 
 aoc = AOC()
@@ -144,4 +140,4 @@ dataFile = "input.txt"
 aoc.readFile(dataFile)
 aoc.calculateFoldSizes()
 aoc.part1()
-# aoc.part2()
+aoc.part2()
